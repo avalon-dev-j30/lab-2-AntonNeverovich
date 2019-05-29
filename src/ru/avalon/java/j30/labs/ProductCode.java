@@ -247,7 +247,7 @@ public class ProductCode {
         else {
 
             for (ProductCode productCode : collection) {
-                if (productCode.equals(this)) {
+                if (collection.contains(this)) {
                     updateDataBase(connection);
                 } else {
                     insertIntoDataBase(connection);
