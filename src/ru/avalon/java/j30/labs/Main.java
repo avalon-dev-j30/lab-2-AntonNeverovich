@@ -1,7 +1,9 @@
 package ru.avalon.java.j30.labs;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.*;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -21,7 +23,7 @@ public class Main {
      * 
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, IOException {
         /*
          * TODO #01 Подключите к проекту все библиотеки, необходимые для соединения с СУБД.
          */
@@ -59,7 +61,16 @@ public class Main {
         /*
          * TODO #02 Реализуйте метод getUrl
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        // Подключаемся к моему удаленному серверу. Сделал на нем отдельную БД
+        // На сервере неправильно настроена Timezone. Сейчас проще подключиться так
+        final String URL = "jdbc:mysql://185.11.246.52:3306/j30_lab_2_antonneverovich";
+        final String TIMEZONE_VALUE = "?verifyServerCertificate=false"+
+                                      "&useSSL=false"+
+                                      "&requireSSL=false"+
+                                      "&useLegacyDatetimeCode=false"+
+                                      "&amp"+
+                                      "&serverTimezone=UTC";
+        return URL + TIMEZONE_VALUE;
     }
     /**
      * Возвращает параметры соединения
@@ -71,19 +82,31 @@ public class Main {
         /*
          * TODO #03 Реализуйте метод getProperties
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        final String PATH_TO_PROPERTIES = "src/ru/avalon/java/j30/labs/resources/config.properties";
+        Properties properties = new Properties();
+        try {
+            FileInputStream fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
+            properties.load(fileInputStream);
+            fileInputStream.close();
+        } catch (IOException e) {
+            System.out.println("Property not found!..");
+            e.printStackTrace();
+        }
+        return properties;
     }
     /**
      * Возвращает соединение с базой данных Sample
      * 
      * @return объект типа {@link Connection}
-     * @throws SQLException 
      */
     private static Connection getConnection() throws SQLException {
         /*
          * TODO #04 Реализуйте метод getConnection
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        Connection connection = DriverManager.getConnection(getUrl(), getProperties());
+        System.out.println("Connection successful!...");
+
+        return connection;
     }
     
 }
