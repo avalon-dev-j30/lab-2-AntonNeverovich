@@ -47,11 +47,9 @@ public class ProductCode {
         /*
          * TODO #05 реализуйте конструктор класса ProductCode
          */
-        while (set.next()) {
-            this.code = (String)set.getObject("CODE");
-            this.discountCode = (Character)set.getObject("DISCOUNT_CODE");
-            this.description = (String)set.getObject("DESCRIPTION");
-        }
+        this.code = set.getString("CODE");
+        this.discountCode = set.getString("DISCOUNT_CODE").charAt(0);
+        this.description = set.getString("DESCRIPTION");
     }
 
     /**
@@ -218,11 +216,10 @@ public class ProductCode {
          * TODO #12 Реализуйте метод convert
          */
         Collection<ProductCode> collection = new ArrayList<>();
+
         if (set != null) {
             while (set.next()) {
-                collection.add(new ProductCode(set.getString("CODE"),
-                        set.getString("DISCOUNT_CODE").charAt(0),
-                        set.getString("DESCRIPTION")));
+                collection.add(new ProductCode(set));
             }
         }
         return collection;
