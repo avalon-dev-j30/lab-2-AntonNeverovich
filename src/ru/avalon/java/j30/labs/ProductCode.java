@@ -111,7 +111,8 @@ public class ProductCode {
         /*
          * TODO #06 Реализуйте метод hashCode
          */
-        return code.hashCode() + (int)discountCode + description.hashCode();
+        //return code.hashCode() + (int)discountCode + description.hashCode();
+        return code.hashCode();
     }
     /**
      * Сравнивает некоторый произвольный объект с текущим объектом типа 
@@ -132,9 +133,9 @@ public class ProductCode {
             return true;
         } else {
             ProductCode productCode = (ProductCode) obj;
-            return code.equals(productCode.code) &
+            return code.equals(productCode.code) /*&
                    discountCode == productCode.discountCode &
-                   description.equals(productCode.description);
+                   description.equals(productCode.description)*/;
         }
     }
     /**
@@ -177,10 +178,8 @@ public class ProductCode {
         /*
          * TODO #10 Реализуйте метод getInsertQuery
          */
-
         String query = "insert into PRODUCT_CODE values (?, ?, ?)";
         System.out.println("Insert statement created!..");
-
         return connection.prepareStatement(query);
     }
     /**
@@ -194,11 +193,10 @@ public class ProductCode {
         /*
          * TODO #11 Реализуйте метод getUpdateQuery
          */
-
-        String query = "update PRODUCT_CODE set `CODE` = ?, " +
+        String query = "update PRODUCT_CODE set " +
                     "DISCOUNT_CODE = ?, " +
                     "`DESCRIPTION` = ? " +
-                    "where DISCOUNT_CODE = ?";
+                    "where `CODE` = ?";
         System.out.println("Update statement created!..");
 
         return connection.prepareStatement(query);
@@ -217,10 +215,8 @@ public class ProductCode {
          */
         Collection<ProductCode> collection = new ArrayList<>();
 
-        if (set != null) {
-            while (set.next()) {
-                collection.add(new ProductCode(set));
-            }
+        while (set.next()) {
+            collection.add(new ProductCode(set));
         }
         return collection;
     }
@@ -242,13 +238,10 @@ public class ProductCode {
 
         if (collection.isEmpty()) { insertIntoDataBase(connection); }
         else {
-
-            for (ProductCode productCode : collection) {
-                if (collection.contains(this)) {
-                    updateDataBase(connection);
-                } else {
-                    insertIntoDataBase(connection);
-                }
+            if (collection.contains(this)) {
+                updateDataBase(connection);
+            } else {
+                insertIntoDataBase(connection);
             }
         }
     }
@@ -264,10 +257,9 @@ public class ProductCode {
 
     private void updateDataBase(Connection connection) throws SQLException {
         PreparedStatement updateStatement = getUpdateQuery(connection);
-        updateStatement.setString(1, code);
-        updateStatement.setString(2, String.valueOf(discountCode));
-        updateStatement.setString(3, description);
-        updateStatement.setString(4, code);
+        updateStatement.setString(1, String.valueOf(discountCode));
+        updateStatement.setString(2, description);
+        updateStatement.setString(3, code);
         updateStatement.executeUpdate();
         System.out.println("Database updated!..");
 
